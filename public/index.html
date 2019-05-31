@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Wasm Canvas Demo</title>
+    <style media = "screen">
+      body, canvas {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="1000" height="1000"></canvas>
+    <script src="canvas.js"></script>
+    <script>
+
+
+      // Render circle
+      // Create canvas context
+      const canvas = document.getElementById('canvas')
+      const context = canvas.getContext('2d')
+
+      const render = (dataLength, circlesSize) => {
+
+      let circles = new Int32Array( Module.buffer, _getCircles( canvas.width, canvas.height ), dataLength )
+
+      context.clearRect( 0, 0, canvas.width, canvas.height )
+
+      for (let i = 0; i < circles.length; i+=circlesSize) {
+        let circle = circles.slice(i, i + circlesSize)
+        let x = circle[0];
+        let y = circle[1];
+        let r =  circle[2];
+        let cr = circle[3];
+        let cg = circle[4];
+        let cb = circle[5];
+
+        context.beginPath()
+        context.arc(x, y, r, 0, 2* Math.PI, false)
+        context.fillStyle = `rgba(${cr},${cg},${cb},0.6)`
+        context.fill()
+      }
+      window.requestAnimationFrame( () => {
+        render( dataLength, circlesSize )
+      } )
+    }
+
+    </script>
+  </body>
+</html>
